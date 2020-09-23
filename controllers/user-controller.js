@@ -4,6 +4,8 @@ const userController = {
 
     getAllUser(req, res) {
         User.find()
+            .populate('friends')
+            .populate('thoughts')
             .select('-__v')
             .then(dbUserData => res.json(dbUserData))
             .catch(err => {
@@ -42,19 +44,19 @@ const userController = {
             .catch((err) => {
                 console.log(err);
                 res.status(500).json(err);
-              });
+            });
     },
 
     deleteUser({ params }, res) {
         User.findOneAndDelete({ _id: params.userId })
-        .then(dbUserData => {
-            if (!dbUserData) {
-                res.status(404).json({ message: 'No user found with this id. Sorry! ' });
-                return;
-            }
-            res.json(dbUserData);
-        })
-        .catch(err => res.status(400).json(err));
+            .then(dbUserData => {
+                if (!dbUserData) {
+                    res.status(404).json({ message: 'No user found with this id. Sorry! ' });
+                    return;
+                }
+                res.json(dbUserData);
+            })
+            .catch(err => res.status(400).json(err));
     }
 }
 
